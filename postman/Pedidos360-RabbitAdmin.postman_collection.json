@@ -1,0 +1,515 @@
+{
+  "info": {
+    "name": "Pedidos360 - RabbitMQ Admin + Notificaciones",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "admin",
+      "value": "http://localhost:8086"
+    },
+    {
+      "key": "notif",
+      "value": "http://localhost:8084"
+    },
+    {
+      "key": "token",
+      "value": "PEGA_AQUI_EL_JWT_DE_AZURE"
+    }
+  ],
+  "item": [
+    {
+      "name": "Colas",
+      "item": [
+        {
+          "name": "Listar colas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin}}/api/admin/queues",
+              "host": [
+                "{{admin}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "queues"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ver cola",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin}}/api/admin/queues/ordenes.checkout.dlq",
+              "host": [
+                "{{admin}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "queues",
+                "ordenes.checkout.dlq"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear cola con DLQ",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin}}/api/admin/queues",
+              "host": [
+                "{{admin}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "queues"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"facturacion.orden-creada\",\n  \"durable\": true,\n  \"deadLetterExchange\": \"pedidos360.dlx\",\n  \"crearDlq\": true,\n  \"ttlMs\": 60000\n}"
+            }
+          }
+        },
+        {
+          "name": "Crear cola INVALIDA (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin}}/api/admin/queues",
+              "host": [
+                "{{admin}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "queues"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"\",\n  \"ttlMs\": 5\n}"
+            }
+          }
+        },
+        {
+          "name": "Purgar DLQ",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin}}/api/admin/queues/ordenes.checkout.dlq/messages",
+              "host": [
+                "{{admin}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "queues",
+                "ordenes.checkout.dlq",
+                "messages"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Eliminar cola",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin}}/api/admin/queues/facturacion.orden-creada?ifUnused=true&ifEmpty=false",
+              "host": [
+                "{{admin}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "queues",
+                "facturacion.orden-creada"
+              ],
+              "query": [
+                {
+                  "key": "ifUnused",
+                  "value": "true"
+                },
+                {
+                  "key": "ifEmpty",
+                  "value": "false"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Eliminar cola protegida (409)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin}}/api/admin/queues/ordenes.checkout",
+              "host": [
+                "{{admin}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "queues",
+                "ordenes.checkout"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Exchanges",
+      "item": [
+        {
+          "name": "Listar exchanges",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin}}/api/admin/exchanges",
+              "host": [
+                "{{admin}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "exchanges"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear exchange",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin}}/api/admin/exchanges",
+              "host": [
+                "{{admin}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "exchanges"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"facturacion.events\",\n  \"tipo\": \"topic\",\n  \"durable\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Crear exchange tipo invalido (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin}}/api/admin/exchanges",
+              "host": [
+                "{{admin}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "exchanges"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"x.events\",\n  \"tipo\": \"otro\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar exchange",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin}}/api/admin/exchanges/facturacion.events",
+              "host": [
+                "{{admin}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "exchanges",
+                "facturacion.events"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bindings",
+      "item": [
+        {
+          "name": "Listar bindings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin}}/api/admin/bindings",
+              "host": [
+                "{{admin}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "bindings"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear binding",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin}}/api/admin/bindings",
+              "host": [
+                "{{admin}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "bindings"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"exchange\": \"pedidos360.events\",\n  \"cola\": \"facturacion.orden-creada\",\n  \"routingKey\": \"orden.creada\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar binding",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{admin}}/api/admin/bindings",
+              "host": [
+                "{{admin}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "bindings"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"exchange\": \"pedidos360.events\",\n  \"cola\": \"facturacion.orden-creada\",\n  \"routingKey\": \"orden.creada\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notificaciones (ms-notificaciones)",
+      "item": [
+        {
+          "name": "Enviar correo manual (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{notif}}/api/notificaciones/enviar",
+              "host": [
+                "{{notif}}"
+              ],
+              "path": [
+                "api",
+                "notificaciones",
+                "enviar"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"to\": \"tu-correo@gmail.com\",\n  \"subject\": \"Prueba Pedidos360\",\n  \"message\": \"Hola desde Postman\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Mis preferencias",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{notif}}/api/notificaciones/preferencias",
+              "host": [
+                "{{notif}}"
+              ],
+              "path": [
+                "api",
+                "notificaciones",
+                "preferencias"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Activar correo de compra",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{notif}}/api/notificaciones/preferencias",
+              "host": [
+                "{{notif}}"
+              ],
+              "path": [
+                "api",
+                "notificaciones",
+                "preferencias"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correoCompra\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Correo de prueba a mi sesion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{notif}}/api/notificaciones/preferencias/prueba",
+              "host": [
+                "{{notif}}"
+              ],
+              "path": [
+                "api",
+                "notificaciones",
+                "preferencias",
+                "prueba"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

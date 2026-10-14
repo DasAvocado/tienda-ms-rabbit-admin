@@ -1,0 +1,29 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: ms-rabbit-admin
+  rabbitmq:
+    host: ${RABBIT_HOST:localhost}
+    port: ${RABBIT_PORT:5672}
+    username: ${RABBIT_USER:guest}
+    password: ${RABBIT_PASSWORD:guest}
+
+app:
+  rabbit:
+    # API HTTP del plugin de administracion (puerto 15672) - solo para LISTAR colas/exchanges/bindings
+    management:
+      url: ${RABBIT_MGMT_URL:http://localhost:15672}
+      vhost: ${RABBIT_VHOST:/}
+    # Recursos del sistema Pedidos360 que esta API NO permite eliminar (los usan los microservicios)
+    # (lista separada por comas)
+    protegidos: >-
+      pedidos360.events,pedidos360.dlx,ordenes.checkout,catalogo.descontar-stock,notificaciones.orden-creada,auditoria.todos
+  azure:
+    tenant-id: ${AZURE_TENANT_ID:d276cca8-e687-4f20-8984-601387d11401}
+    client-id: ${AZURE_CLIENT_ID:39a9591b-35f1-4165-8cf2-667a2c643920}
+  security:
+    require-roles: ${REQUIRE_ROLES:true}
+    # false = permite usar la API desde Postman SIN token (SOLO pruebas locales)
+    enabled: ${SECURITY_ENABLED:true}

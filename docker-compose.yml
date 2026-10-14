@@ -1,0 +1,9 @@
+services:
+  ms-rabbit-admin:
+    build: .
+    image: pedidos360/ms-rabbit-admin
+    container_name: ms-rabbit-admin
+    restart: unless-stopped
+    ports:
+      - "8086:8086"
+    env_file: .env      # copia .env.example a .env y completa los valores
